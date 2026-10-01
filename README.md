@@ -6,7 +6,7 @@ Whether you're a developer building agents, an automation tinkerer wiring up wor
 
 Hosted on your own Cloudflare account. **9 tools.**
 
-Built as part of [auny-ai/claude-os](https://github.com/auny-ai/claude-os) — a multi-AI operating system being built in public. 🧡
+Built as part of [aunysillyme-dev/claude-os](https://github.com/aunysillyme-dev/claude-os) — a multi-AI operating system being built in public. 🧡
 
 ---
 
@@ -133,7 +133,7 @@ This repo doesn't bill you for anything. You're deploying your own copy of the s
 ## Install
 
 ```bash
-git clone https://github.com/auny-ai/grok-mcp-server.git
+git clone https://github.com/aunysillyme-dev/grok-mcp-server.git
 cd grok-mcp-server
 npm install
 npx wrangler login
@@ -461,7 +461,7 @@ A hosted MCP fixes all of that. The server lives on the open internet — on you
 
 **If you're a creator or automation user:** this is what lets the magic follow you off your laptop. Your routines run while you sleep. Your phone has the same powers as your desktop. Your context is portable.
 
-The longer version — the architecture, the trade-offs, the templates for building this kind of context system around Claude — lives in [CLAUDE.md is the Starting Point](https://github.com/auny-ai/claude-os/blob/main/articles/claude_md_is_the_starting_point.md). Worth a read if you're thinking about building a system around Claude, not just chatting with it.
+The longer version — the architecture, the trade-offs, the templates for building this kind of context system around Claude — lives in [CLAUDE.md is the Starting Point](https://github.com/aunysillyme-dev/claude-os/blob/main/articles/claude_md_is_the_starting_point.md). Worth a read if you're thinking about building a system around Claude, not just chatting with it.
 
 ---
 
@@ -487,7 +487,7 @@ MIT. Fork it, ship it, change it, sell it.
 
 ## Related
 
-- [auny-ai/claude-os](https://github.com/auny-ai/claude-os) — the multi-AI operating system this is part of
+- [aunysillyme-dev/claude-os](https://github.com/aunysillyme-dev/claude-os) — the multi-AI operating system this is part of
 - [Cloudflare Agents SDK docs](https://developers.cloudflare.com/agents/) — the SDK underneath this
 - [Model Context Protocol](https://modelcontextprotocol.io) — the standard this implements
 - [xAI API docs](https://docs.x.ai/) — the underlying API this wraps
