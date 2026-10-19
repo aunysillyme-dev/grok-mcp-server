@@ -4,6 +4,8 @@
 
 Deploy: TypeScript, Cloudflare Workers, Node 22. See the install contract in AGENTS.md and the setup steps in README.md.
 
+MCP SDK v2 uses `@modelcontextprotocol/server` and `createMcpHandler` from `agents/mcp/server`, with a fresh-server factory after `gateMcp()`. Run `verify.sh` with `MCP_URL` and `AUTH_SECRET` in the environment, plus `CONNECT_SECRET` to test the connector flow. With `CONNECT_SECRET` unset, path B is skipped and `/oauth/confirm` must refuse a request without the key (503 when the connector flow is off, 401 when it is on). Tool counts accept JSON and SSE responses.
+
 ## Docs
 
 - [README](https://github.com/aunysillyme-dev/grok-mcp-server/blob/main/README.md): tools, setup, both auth paths

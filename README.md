@@ -176,11 +176,16 @@ Verify both auth paths and the tool count in one shot:
 
 ```bash
 AUTH_SECRET=<the secret you generated> \
+CONNECT_SECRET=<your connect key> \
 MCP_URL=https://grok-mcp-server.<your-account>.workers.dev \
 ./verify.sh
 ```
 
-Should end in `PASS`.
+Should end in `PASS`. `AUTH_SECRET` is required. `CONNECT_SECRET` enables the
+connector checks, including wrong-key, wrong-PKCE and code-replay rejection.
+With `CONNECT_SECRET` unset, path B is skipped and the script checks that
+`/oauth/confirm` refuses a request without the key (503 when the connector
+flow is off, 401 when it is on). Tool counts accept JSON and SSE responses.
 
 ---
 
@@ -393,6 +398,9 @@ xAI Grok API (api.x.ai/v1)
 ```
 
 - **Transport:** MCP over Streamable HTTP at `/mcp`
+- **SDK:** MCP SDK v2 (`@modelcontextprotocol/server`), with
+  `createMcpHandler` from `agents/mcp/server` calling a fresh-server factory
+  after `gateMcp()` accepts the request.
 - **State:** stateless per request, apart from one Durable Object (`CodeLedger`)
   that records spent OAuth authorization codes so none can be redeemed twice.
   No session memory, no KV, no database.
@@ -410,13 +418,15 @@ and common failure modes.
 
 ## Adding tools
 
-`src/index.ts` defines tools using the MCP SDK's `server.tool()` pattern:
+`src/index.ts` defines tools using MCP SDK v2's `server.registerTool()` pattern:
 
 ```typescript
-server.tool(
+server.registerTool(
   "tool_name",
-  "Tool description for the LLM",
-  { param: z.string() },
+  {
+    description: "Tool description for the LLM",
+    inputSchema: { param: z.string() },
+  },
   async ({ param }) => {
     // your logic here
     return { content: [{ type: "text", text: "..." }] };

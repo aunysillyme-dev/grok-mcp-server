@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.3.3] - 2026-10-19
+
+### Changed
+
+- The MCP endpoint runs on MCP SDK v2: tools register on `@modelcontextprotocol/server` 2.3.1 and each request gets a fresh server from a factory passed to `createMcpHandler` in `agents/mcp/server`, the replacement agents 0.28.1 names for its deprecated SDK v1 path. The same 9 tools, schemas and auth gate apply.
+- The endpoint accepts browser requests carrying an `Origin` header from localhost and the Worker's own workers.dev hostname; server-side clients such as claude.ai and Claude Code send no `Origin` and connect as before.
+- `@modelcontextprotocol/server` replaces `@modelcontextprotocol/sdk` as a direct dependency; agents still installs the SDK as its own peer.
+- The Worker bundle is 1255.84 KiB, down from 3433.85 KiB, because the handler comes from the isolated `agents/mcp/server` entry point.
+
+### Fixed
+
+- `verify.sh` tests the claude.ai connector flow again: with `CONNECT_SECRET` in the environment it sends the connect key, then checks the OAuth token, a wrong connect key (401), a wrong PKCE verifier and a replayed code (both `invalid_grant`). Without it, the script checks that `/oauth/confirm` refuses a request without the key.
+- `verify.sh` passes secrets to curl through a stdin config, so they stay off the process list, and reads tool counts from JSON or SSE responses.
+
 ## [1.3.2] - 2026-10-19
 
 ### Security

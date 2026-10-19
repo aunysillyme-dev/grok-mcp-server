@@ -4,8 +4,8 @@
 
 One Cloudflare Worker, one file that matters (`src/index.ts`) plus one auth
 module (`src/auth.ts`). No database, no KV, no session
-state. Every `/mcp` request builds a fresh `McpServer` instance scoped to that
-request's `env`.
+state. Each authorized `/mcp` request gets a fresh MCP SDK v2 `McpServer`
+from `@modelcontextprotocol/server`, scoped to that request's `env`.
 
 ```
 MCP client (Claude Code / claude.ai connector / any MCP client)
@@ -36,9 +36,17 @@ Requests are checked in this order:
    Unauthenticated by design: these routes issue a credential, they don't
    consume one.
 2. **`/`**: health/info JSON (tool list, version).
-3. **`/mcp`**: gated by `gateMcp()` first, then handled by the MCP SDK's
-   Streamable HTTP transport.
+3. **`/mcp`**: gated by `gateMcp()` first, then handled by
+   `createMcpHandler(() => buildServer(env), { route: "/mcp" })` from
+   `agents/mcp/server`, using MCP SDK v2's Streamable HTTP transport.
 4. Anything else: 404.
+
+Browser requests carrying an `Origin` header are accepted only from localhost
+and the Worker's own workers.dev hostname by default. The handler retains
+its default Host validation for localhost and workers.dev endpoints.
+
+`buildServer(env)` returns a new `McpServer` on every call and registers all
+nine tools with `server.registerTool(name, { description, inputSchema }, handler)`.
 
 ## Inbound auth (`src/auth.ts`)
 
@@ -66,6 +74,14 @@ No KV, no database: tokens are stateless and
 self-verifying via HMAC-SHA256 keyed on `AUTH_SECRET`. Revoking access means
 rotating `AUTH_SECRET`, which invalidates every previously issued token at
 once.
+
+`verify.sh` reads `AUTH_SECRET` from the environment for path A and
+`CONNECT_SECRET` for path B. With both set, it posts `connect_key` to
+`/oauth/confirm`, exchanges the code, and checks the OAuth tool count plus
+wrong-key, wrong-PKCE and code-replay rejection. With `CONNECT_SECRET` unset,
+it skips path B and checks that `/oauth/confirm` refuses a request without the
+key (503 when the connector flow is off, 401 when it is on).
+Tool counts accept JSON and SSE responses.
 
 ## Outbound calls (server → xAI)
 

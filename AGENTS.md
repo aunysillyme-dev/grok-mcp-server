@@ -17,6 +17,10 @@ Nine tools. Stateless per request, with one exception: the `CodeLedger`
 Durable Object records spent OAuth authorization codes so none can be
 redeemed twice. No KV, no session memory.
 
+MCP SDK v2 (`@modelcontextprotocol/server`) supplies `McpServer`. The
+`createMcpHandler` export from `agents/mcp/server` receives a factory that
+builds a fresh server per request, after `gateMcp()` accepts it.
+
 ---
 
 ## 0. Prerequisites
@@ -63,6 +67,11 @@ access. Set it without a trailing newline (`printf '%s'`, not `echo`) and
 never echo the value back. `MCP_PUBLIC=true` is a deliberate escape hatch to
 run open on purpose; leave it unset otherwise.
 
+Set a separate `CONNECT_SECRET` for the OAuth consent page with
+`wrangler secret put CONNECT_SECRET`. Keep your generated connect key for
+connecting clients and running the connector checks below. The connector
+flow stays disabled (503) until this secret is configured.
+
 ---
 
 ## 3. Deploy
@@ -80,7 +89,9 @@ it will differ from every other install of this repo.
 ## 4. Verify
 
 ```sh
-AUTH_SECRET=<the secret you generated> MCP_URL=https://<your-worker-url> ./verify.sh
+AUTH_SECRET=<the secret you generated> \
+CONNECT_SECRET=<your connect key> \
+MCP_URL=https://<your-worker-url> ./verify.sh
 ```
 
 Expected:
@@ -90,12 +101,20 @@ A: static bearer → tools/list       ok (9 tools)
 no credential                       ok (401)
 bad credential                      ok (401)
 oauth discovery                     ok (200)
+B: wrong connect key rejected        ok (401)
+B: wrong PKCE rejected              ok (invalid_grant)
 B: OAuth/PKCE → token                ok
 B: oauth token → tools/list         ok (9 tools)
-B: wrong PKCE rejected              ok (invalid_grant)
+B: code replay rejected             ok (invalid_grant)
 
 PASS
 ```
+
+`AUTH_SECRET` is required. With `CONNECT_SECRET` unset, path B is skipped
+with a note that `CONNECT_SECRET` tests the connector flow, and the script
+checks that `/oauth/confirm` refuses a request without the key: 503 when the
+connector flow is off, 401 when it is on. Tool counts accept JSON and SSE
+responses.
 
 Non-zero exit means do not proceed. The failing line names the step to
 revisit: a `no credential` failure specifically means the endpoint is open

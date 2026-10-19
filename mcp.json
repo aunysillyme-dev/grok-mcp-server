@@ -6,6 +6,12 @@
   "transport": "http",
   "endpoint": "https://<your-worker>.<your-subdomain>.workers.dev/mcp",
   "single_tenant": true,
+  "mcp_sdk": {
+    "package": "@modelcontextprotocol/server",
+    "version": "2.3.1",
+    "handler_import": "agents/mcp/server",
+    "wiring": "createMcpHandler(() => buildServer(env), { route: \"/mcp\" }) after gateMcp() accepts the request"
+  },
 
   "prerequisites": {
     "node": ">=18",
@@ -32,6 +38,13 @@
       "note": "Inbound auth gate (src/auth.ts), dual-route. Path A: static bearer 'Authorization: Bearer <AUTH_SECRET>'. Path B: OAuth/PKCE for the claude.ai connector (stateless HMAC tokens, no KV). This single secret backs both paths. Fails closed (503) when unset. Set without a trailing newline, per the set_with command above."
     },
     {
+      "name": "CONNECT_SECRET",
+      "required": false,
+      "set_with": "wrangler secret put CONNECT_SECRET",
+      "how": "generate your own: openssl rand -hex 32",
+      "note": "Required for the connector flow and its verify.sh checks. Authenticates the owner via the connect_key form field at /oauth/confirm. The connector flow returns 503 when unset."
+    },
+    {
       "name": "MCP_PUBLIC",
       "required": false,
       "set_with": "wrangler secret put MCP_PUBLIC",
@@ -44,6 +57,12 @@
   "crons": [],
 
   "verify": "./verify.sh",
+  "verify_environment": {
+    "MCP_URL": "Your Worker's base URL, without /mcp",
+    "AUTH_SECRET": "Required: the Worker's static bearer secret",
+    "CONNECT_SECRET": "Supply to test the connector flow, including wrong-key, wrong-PKCE and code-replay rejection. When unset, path B is skipped and /oauth/confirm must refuse a request without the key (503 when the connector flow is off, 401 when it is on)."
+  },
+  "verify_response_formats": ["json", "sse"],
   "expected_tools": 9,
 
   "tools": [
