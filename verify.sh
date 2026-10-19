@@ -8,7 +8,8 @@
 #   MCP_URL=https://your-worker.your-subdomain.workers.dev AUTH_SECRET=... CONNECT_SECRET=... ./verify.sh
 #
 # Secrets are read from the environment on purpose. Never hardcode them: this
-# file is committed. Without CONNECT_SECRET, path B asserts a disabled flow (503).
+# file is committed. Without CONNECT_SECRET, path B checks that /oauth/confirm
+# refuses a request without the key (503 when the flow is off, 401 when it is on).
 
 set -uo pipefail
 
@@ -26,7 +27,15 @@ fi
 
 # Secrets travel to curl through a config on stdin, never on its command line,
 # where any local process could read them.
-cfg_quote() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+# A value with a line break is refused, never sent: it could end the config line
+# and smuggle in a curl option. Tokens and secrets never contain one.
+cfg_quote() {
+  case "$1" in *$'\n'*|*$'\r'*)
+    echo "verify.sh: refusing a value that contains a line break" >&2; return 1 ;;
+  esac
+  local v=${1//\\/\\\\}
+  printf '%s' "${v//\"/\\\"}"
+}
 
 count_tools() {
   # $1 = bearer token. Stateless transport: tools/list needs no initialize and
@@ -106,22 +115,28 @@ else
     --data-urlencode "state=xyz" --data-urlencode "code_challenge=$CH")
   CODE=$(printf '%s' "$LOC" | sed -n 's/.*[?&]code=\([^&]*\).*/\1/p')
 
-  # Check PKCE before redemption so a spent code cannot mask a verifier failure.
-  err=$(exchange_code WRONG | json_field error)
-  if [ "$err" = "invalid_grant" ]; then p "B: wrong PKCE rejected" "ok (invalid_grant)"
-  else p "B: PKCE negative" "FAIL (expected invalid_grant)"; fail=1; fi
+  if [ -z "$CODE" ]; then
+    # Without a code the checks below would pass on "invalid code" alone.
+    p "B: authorization code" "FAIL (none issued; is CONNECT_SECRET the Worker's?)"; fail=1
+  else
+    # Check PKCE before redemption so a spent code cannot mask a verifier failure.
+    # Match the exact reason: invalid_grant also covers expired and unknown codes.
+    d=$(exchange_code WRONG | json_field error_description)
+    if [ "$d" = "PKCE verification failed" ]; then p "B: wrong PKCE rejected" "ok (invalid_grant)"
+    else p "B: PKCE negative" "FAIL (expected a PKCE rejection, got: ${d:-none})"; fail=1; fi
 
-  TOK=$(exchange_code "$VER" | json_field access_token)
-  if [ -n "$TOK" ]; then p "B: OAuth/PKCE → token" "ok"
-  else p "B: token exchange" "FAIL"; fail=1; fi
+    TOK=$(exchange_code "$VER" | json_field access_token)
+    if [ -n "$TOK" ]; then p "B: OAuth/PKCE → token" "ok"
+    else p "B: token exchange" "FAIL"; fail=1; fi
 
-  n=$(count_tools "$TOK")
-  if [ "${n:-0}" -eq "$EXPECTED_TOOLS" ]; then p "B: oauth token → tools/list" "ok ($n tools)"
-  else p "B: oauth token" "FAIL (got $n)"; fail=1; fi
+    n=$(count_tools "$TOK")
+    if [ "${n:-0}" -eq "$EXPECTED_TOOLS" ]; then p "B: oauth token → tools/list" "ok ($n tools)"
+    else p "B: oauth token" "FAIL (got $n)"; fail=1; fi
 
-  err=$(exchange_code "$VER" | json_field error)
-  if [ "$err" = "invalid_grant" ]; then p "B: code replay rejected" "ok (invalid_grant)"
-  else p "B: code replay" "FAIL (expected invalid_grant)"; fail=1; fi
+    d=$(exchange_code "$VER" | json_field error_description)
+    if [ "$d" = "Authorization code has already been redeemed" ]; then p "B: code replay rejected" "ok (invalid_grant)"
+    else p "B: code replay" "FAIL (expected a replay rejection, got: ${d:-none})"; fail=1; fi
+  fi
 fi
 
 echo

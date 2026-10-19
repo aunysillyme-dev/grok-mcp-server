@@ -106,10 +106,10 @@ function buildServer(env: Env): McpServer {
     "x_search",
     {
       description: "Search X (Twitter) for recent and relevant posts via xAI's native X search. Returns author handles, post content, and engagement signals. Supports X advanced search operators like min_faves:N, filter:blue_verified, from:user, since:YYYY-MM-DD.",
-      inputSchema: {
+      inputSchema: z.object({
         query: z.string().describe("What to search for on X. Supports X advanced search operators."),
         context: z.string().optional().describe("Optional focus or filter for results"),
-      },
+      }),
     },
     async ({ query, context }) => {
       const input = context
@@ -129,10 +129,10 @@ function buildServer(env: Env): McpServer {
     "grok_web_search",
     {
       description: "Search the web via Grok. Returns current information with sources. Useful for live data beyond training cutoffs: news, pricing, releases, recent papers.",
-      inputSchema: {
+      inputSchema: z.object({
         query: z.string().describe("What to search for"),
         context: z.string().optional().describe("Optional focus or filter for results"),
-      },
+      }),
     },
     async ({ query, context }) => {
       const input = context
@@ -152,11 +152,11 @@ function buildServer(env: Env): McpServer {
     "grok_chat",
     {
       description: "Chat with Grok. Plain text completion with optional system prompt. Useful when you want Grok's reasoning style or voice, not Claude's.",
-      inputSchema: {
+      inputSchema: z.object({
         prompt: z.string().describe("User prompt"),
         system: z.string().optional().describe("Optional system prompt"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_TEXT_MODEL})`),
-      },
+      }),
     },
     async ({ prompt, system, model }) => {
       const input = system
@@ -182,11 +182,11 @@ function buildServer(env: Env): McpServer {
     "grok_image_generate",
     {
       description: "Generate images from a text prompt using Grok Imagine. Returns image URL(s). Good for mockups, social cards, thumbnails, brand visuals, A/B variants.",
-      inputSchema: {
+      inputSchema: z.object({
         prompt: z.string().describe("Text description of the image to generate"),
         n: z.number().int().min(1).max(4).optional().describe("Number of image variations (1-4, default 1)"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_IMAGE_MODEL})`),
-      },
+      }),
     },
     async ({ prompt, n, model }) => {
       const data = await xaiFetch(env, "/images/generations", {
@@ -210,11 +210,11 @@ function buildServer(env: Env): McpServer {
     "grok_image_understand",
     {
       description: "Analyze an image with Grok's vision capabilities. Pass an image URL and a prompt describing what to analyze. Useful for screenshot analysis, content audits, alt-text, design feedback.",
-      inputSchema: {
+      inputSchema: z.object({
         image_url: z.string().describe("URL of the image to analyze (jpg, jpeg, or png)"),
         prompt: z.string().describe("What you want to know about the image"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_TEXT_MODEL})`),
-      },
+      }),
     },
     async ({ image_url, prompt, model }) => {
       const data = await xaiFetch(env, "/responses", {
@@ -238,11 +238,11 @@ function buildServer(env: Env): McpServer {
     "grok_image_edit",
     {
       description: "Edit an existing image via a text prompt using Grok Imagine. Pass an image URL and a description of the change. Returns the edited image URL.",
-      inputSchema: {
+      inputSchema: z.object({
         image_url: z.string().describe("URL of the image to edit"),
         prompt: z.string().describe("Description of the edit (e.g. 'make the background blue', 'change to night scene')"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_IMAGE_MODEL})`),
-      },
+      }),
     },
     async ({ image_url, prompt, model }) => {
       const data = await xaiFetch(env, "/images/edits", {
@@ -264,11 +264,11 @@ function buildServer(env: Env): McpServer {
     "grok_video_generate",
     {
       description: "Generate a short video (up to 10 seconds, 720p) using Grok Imagine. Supports text-to-video and image-to-video. Returns the video URL when ready. Note: can take 20-60 seconds.",
-      inputSchema: {
+      inputSchema: z.object({
         prompt: z.string().describe("Text description of the video to generate"),
         image_url: z.string().optional().describe("Optional starting image URL for image-to-video generation"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_VIDEO_MODEL})`),
-      },
+      }),
     },
     async ({ prompt, image_url, model }) => {
       const body: Record<string, unknown> = {
@@ -294,14 +294,14 @@ function buildServer(env: Env): McpServer {
     "grok_structured_output",
     {
       description: "Get a JSON-schema-enforced response from Grok. Pass a prompt and a JSON Schema describing the expected structure. Returns parsed JSON matching the schema. Useful for reliable agent pipelines, data extraction, ETL workflows.",
-      inputSchema: {
+      inputSchema: z.object({
         prompt: z.string().describe("What you want Grok to produce"),
         schema: z
           .union([z.string(), z.record(z.string(), z.any())])
           .describe("JSON Schema (as object or stringified JSON) describing the expected response shape"),
         system: z.string().optional().describe("Optional system prompt"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_TEXT_MODEL})`),
-      },
+      }),
     },
     async ({ prompt, schema, system, model }) => {
       const parsedSchema = typeof schema === "string" ? JSON.parse(schema) : schema;
@@ -332,7 +332,7 @@ function buildServer(env: Env): McpServer {
     "grok_reasoning",
     {
       description: "Use Grok's reasoning mode for deep analysis on complex problems. Slower than grok_chat but produces more rigorous output. Good for strategy questions, multi-step problems, debate prep, technical analysis.",
-      inputSchema: {
+      inputSchema: z.object({
         prompt: z.string().describe("The question or problem to reason through"),
         effort: z
           .enum(["low", "medium", "high"])
@@ -340,7 +340,7 @@ function buildServer(env: Env): McpServer {
           .describe("Reasoning depth (default: medium). 'high' is slower but more thorough."),
         system: z.string().optional().describe("Optional system prompt"),
         model: z.string().optional().describe(`Optional model override (default: ${DEFAULT_TEXT_MODEL})`),
-      },
+      }),
     },
     async ({ prompt, effort, system, model }) => {
       const input = system
