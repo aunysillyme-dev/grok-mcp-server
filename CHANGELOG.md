@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-10-19
+
+### Security
+
+- MCP TypeScript SDK 1.32.1 and MCP client 2.3.1, which keep the OAuth client talking only to the intended authorization server ([GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h)).
+- proxy-addr 2.0.8, which closes IP spoofing through an IPv4-mapped IPv6 trust subnet ([GHSA-jqcg-44mw-7w3h](https://github.com/advisories/GHSA-jqcg-44mw-7w3h)).
+- Local development runtime: sharp 0.35.5 ([GHSA-wq5f-xc86-pv6w](https://github.com/advisories/GHSA-wq5f-xc86-pv6w)) and undici 7.29.1 (six advisories), both through wrangler. Neither ships in the deployed Worker.
+
+### Changed
+
+- agents 0.28.1, the first release that pairs with the patched MCP SDK and client.
+- wrangler 4.149.0, the first release whose local runtime carries the patched sharp and undici.
+
 ## [1.3.1] - 2026-10-18
 
 ### Changed
