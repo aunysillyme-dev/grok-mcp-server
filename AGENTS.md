@@ -1,11 +1,11 @@
-# AGENTS.md — install contract for grok-mcp-server
+# AGENTS.md: install contract for grok-mcp-server
 
 Instructions for an AI agent installing this server on a new machine or for a
 new LLM client. Follow in order. `mcp.json` is the machine-readable companion
 to this file; if the two ever disagree, `mcp.json` wins and this file is stale.
 
 This deploys a copy on the **installer's own** Cloudflare account, billed to
-the **installer's own** xAI key. Every value below is theirs to supply — never
+the **installer's own** xAI key. Every value below is theirs to supply. Never
 reuse a value you've seen elsewhere.
 
 ---
@@ -23,7 +23,7 @@ redeemed twice. No KV, no session memory.
 
 - Node >= 18, `npx wrangler` >= 4
 - A Cloudflare account (Workers free tier is enough)
-- An xAI API account with billing set up (console.x.ai) — image and video
+- An xAI API account with billing set up (console.x.ai): image and video
   generation cost more than text
 - `wrangler login` already completed
 
@@ -40,7 +40,7 @@ npm install
 
 ---
 
-## 2. Set secrets — the installer's own values
+## 2. Set secrets: the installer's own values
 
 Prompt the operator for each value. Never write them to a file, never echo
 them, never commit them. `mcp.json` carries a `how` field per secret
@@ -57,7 +57,7 @@ printf '%s' "$(openssl rand -hex 32)" | wrangler secret put AUTH_SECRET
 dual-route: a static bearer (`Authorization: Bearer <AUTH_SECRET>`) for direct
 clients like Claude Code, and OAuth/PKCE (stateless HMAC tokens, no KV) for the
 claude.ai connector's one-click Connect. Both routes are backed by this one
-secret, generated fresh for this install. The gate fails closed — if
+secret, generated fresh for this install. The gate fails closed: if
 `AUTH_SECRET` is unset the server returns 503 on every request, never open
 access. Set it without a trailing newline (`printf '%s'`, not `echo`) and
 never echo the value back. `MCP_PUBLIC=true` is a deliberate escape hatch to
@@ -72,7 +72,7 @@ npx wrangler deploy
 ```
 
 Note the deployed URL from the output, e.g.
-`https://grok-mcp-server.<your-subdomain>.workers.dev`. This URL is **yours** —
+`https://grok-mcp-server.<your-subdomain>.workers.dev`. This URL is **yours**:
 it will differ from every other install of this repo.
 
 ---
@@ -98,7 +98,7 @@ PASS
 ```
 
 Non-zero exit means do not proceed. The failing line names the step to
-revisit — a `no credential` failure specifically means the endpoint is open
+revisit: a `no credential` failure specifically means the endpoint is open
 and billing your xAI account to anyone who finds the URL.
 
 ---
@@ -117,7 +117,7 @@ claude mcp add grok --transport http \
 
 Add the connector by URL (`https://<your-worker-url>/mcp`) in claude.ai
 connector settings and click Connect. It completes OAuth/PKCE against
-`/oauth/authorize` and `/oauth/token` automatically — never put the key in the
+`/oauth/authorize` and `/oauth/token` automatically. Never put the key in the
 URL as `?key=`.
 
 Confirm each client lists 9 tools.

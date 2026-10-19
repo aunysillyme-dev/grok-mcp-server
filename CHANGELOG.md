@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-18
+
+### Changed
+
+- Description shortened to fit search cards.
+- Punctuation in README, docs, manifest and comments uses no em dashes.
+
+### Removed
+
+- A working audit brief that was committed to the repository by mistake; briefs are now gitignored.
+
+## [1.3.0] - 2026-09-20
+
+### Added
+
+- Single-use authorization codes backed by the `CodeLedger` Durable Object.
+- Auth regression suite in `test/auth.test.ts`.
+- Repository conventions: `SECURITY.md`, `CODE_OF_CONDUCT.md`, issue and pull request templates, and CI.
+
+### Fixed
+
+- Hosted auth fixes backported to this server.
+
 ## [1.2.0] - 2026-07-23
 
 ### Added

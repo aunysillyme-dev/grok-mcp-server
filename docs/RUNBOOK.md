@@ -10,7 +10,7 @@ you've already followed `AGENTS.md` for initial setup.
 1. Generate a new key at console.x.ai (do this before revoking the old one,
    so there's no gap).
 2. `wrangler secret put XAI_API_KEY` and paste the new key.
-3. `wrangler deploy` — Workers pick up new secret values on next deploy.
+3. `wrangler deploy`: Workers pick up new secret values on next deploy.
 4. Revoke the old key in the xAI console.
 5. Smoke-test: `AUTH_SECRET=... ./verify.sh` (this doesn't test XAI_API_KEY
    directly, so also run one real tool call, e.g. `grok_chat`, from a
@@ -18,7 +18,7 @@ you've already followed `AGENTS.md` for initial setup.
 
 ## Rotate AUTH_SECRET
 
-Rotating this invalidates **every** previously issued credential at once —
+Rotating this invalidates **every** previously issued credential at once:
 the static bearer and every OAuth access token, because both are verified
 against the current secret value.
 
@@ -28,7 +28,7 @@ against the current secret value.
    Code, scripts, cron jobs) with the new value.
 4. Reconnect the claude.ai connector: disconnect it, then Connect again to
    redo the OAuth/PKCE handshake against the new secret.
-5. Run `AUTH_SECRET=<new value> ./verify.sh` — expect `PASS`.
+5. Run `AUTH_SECRET=<new value> ./verify.sh`: expect `PASS`.
 
 ## Redeploy after a code change
 
@@ -36,20 +36,20 @@ against the current secret value.
 npx wrangler deploy
 ```
 
-No migration or restart step needed — the Worker is stateless. Follow with
+No migration or restart step needed: the Worker is stateless. Follow with
 `./verify.sh` to confirm the auth gate and tool count are unchanged.
 
 ## Reconnect a client after any auth change
 
 Symptom: a previously working client starts getting 401s.
 
-1. Confirm which path it uses — static bearer (Claude Code, scripts) or OAuth
+1. Confirm which path it uses: static bearer (Claude Code, scripts) or OAuth
    (claude.ai connector).
 2. Static bearer: update the `Authorization` header with the current
    `AUTH_SECRET`.
 3. OAuth: disconnect and reconnect the connector to redo the handshake and
    receive a token signed with the current secret.
-4. Verify with one real tool call, not just `verify.sh` — `verify.sh` proves
+4. Verify with one real tool call, not just `verify.sh`: `verify.sh` proves
    the server is healthy, not that a specific client's config is correct.
 
 ## Common failures

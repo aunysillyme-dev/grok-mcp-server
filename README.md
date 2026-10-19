@@ -1,60 +1,60 @@
 # grok-mcp-server
 
-A remote MCP server that gives any Claude (or any MCP-compatible AI) access to xAI Grok's full surface area — live X (Twitter) search, web search, chat, image generation, vision, image editing, video generation, structured outputs, and reasoning — from anywhere. Your laptop, your phone, an automated routine running while you sleep.
+A remote MCP server that gives any Claude (or any MCP-compatible AI) access to xAI Grok's full surface area (live X (Twitter) search, web search, chat, image generation, vision, image editing, video generation, structured outputs, and reasoning) from anywhere. Your laptop, your phone, an automated routine running while you sleep.
 
-Whether you're a developer building agents, an automation tinkerer wiring up workflows, or a creator who wants real-time data inside Claude — this is the same install.
+Whether you're a developer building agents, an automation tinkerer wiring up workflows, or a creator who wants real-time data inside Claude, this is the same install.
 
 Hosted on your own Cloudflare account. **9 tools.**
 
-Built as part of [aunysillyme-dev/claude-os](https://github.com/aunysillyme-dev/claude-os) — a multi-AI operating system being built in public. 🧡
+Built as part of [aunysillyme-dev/claude-os](https://github.com/aunysillyme-dev/claude-os), a multi-AI operating system being built in public. 🧡
 
 ---
 
 ## What it does
 
-Nine tools, all wrapping xAI's API. Each tool is general-purpose — the use cases below are just examples of what's possible.
+Nine tools, all wrapping xAI's API. Each tool is general-purpose. The use cases below are just examples of what's possible.
 
 ### Search + chat
 
-#### `x_search` — Real-time X (Twitter) data
+#### `x_search`: Real-time X (Twitter) data
 
 Searches X via xAI's native x_search backend. Returns posts with author handles, follower counts, engagement metrics (likes, retweets, replies, views), timestamps, embedded media, and quote-tweet context.
 
 Supports the full X advanced search operator set: `min_faves:N`, `min_retweets:N`, `filter:blue_verified`, `filter:verified`, `from:user`, `lang:en`, `since:YYYY-MM-DD`, and the rest.
 
-#### `grok_web_search` — Live web search with current information
+#### `grok_web_search`: Live web search with current information
 
-General web search via Grok, with results synthesized into a coherent answer plus sources. Updated continuously — not subject to a model knowledge cutoff.
+General web search via Grok, with results synthesized into a coherent answer plus sources. Updated continuously (not subject to a model knowledge cutoff).
 
-#### `grok_chat` — Grok as a model, not just a search tool
+#### `grok_chat`: Grok as a model, not just a search tool
 
-Plain text completion with Grok directly. Optional system prompt and model override. Useful when you want Grok's reasoning style or voice — not Claude's — for a specific output.
+Plain text completion with Grok directly. Optional system prompt and model override. Useful when you want Grok's reasoning style or voice (not Claude's) for a specific output.
 
 ### Vision + media
 
-#### `grok_image_generate` — Text-to-image generation
+#### `grok_image_generate`: Text-to-image generation
 
 Generate images from a text prompt using Grok Imagine (Quality Mode). Returns image URL(s). Good for mockups, social cards, thumbnails, brand visuals, and A/B variants. Up to 4 variations per call.
 
-#### `grok_image_understand` — Multimodal vision
+#### `grok_image_understand`: Multimodal vision
 
-Pass an image URL and a question — get analysis back. Useful for screenshot debugging, content audits, alt-text generation, design feedback, and visual triage.
+Pass an image URL and a question: get analysis back. Useful for screenshot debugging, content audits, alt-text generation, design feedback, and visual triage.
 
-#### `grok_image_edit` — Text-prompt image editing
+#### `grok_image_edit`: Text-prompt image editing
 
-Pass an existing image URL and a description of the change — get an edited image back. Useful for iterating on brand visuals, generating color/style variants, and remixing existing assets.
+Pass an existing image URL and a description of the change: get an edited image back. Useful for iterating on brand visuals, generating color/style variants, and remixing existing assets.
 
-#### `grok_video_generate` — Text-to-video / image-to-video
+#### `grok_video_generate`: Text-to-video / image-to-video
 
 Generate short videos (up to 10 seconds, 720p) using Grok Imagine. Supports text-only prompts and image-to-video (start from a still). Returns the video URL. Note: video generation can take 20-60 seconds.
 
 ### Structured outputs + reasoning
 
-#### `grok_structured_output` — JSON-schema-enforced responses
+#### `grok_structured_output`: JSON-schema-enforced responses
 
 Pass a prompt and a JSON Schema describing the expected structure. Returns parsed JSON matching the schema. Useful for reliable agent pipelines, data extraction from text, and ETL workflows where you need consistent output shape.
 
-#### `grok_reasoning` — Deep analysis mode
+#### `grok_reasoning`: Deep analysis mode
 
 Use Grok's reasoning mode for complex problems. Slower than `grok_chat` but produces more rigorous output. Effort level adjustable (`low`, `medium`, `high`). Good for strategy questions, multi-step analysis, debate prep, and technical reviews.
 
@@ -67,7 +67,7 @@ This is a general-purpose Grok wrapper that any MCP client can hit. The use case
 ### For developers
 
 - **Build agents that need real-time data.** Most AI agents are blind to the last 24 hours. This gives any MCP-compatible agent live X + web search as a primitive.
-- **Multi-model orchestration.** Claude as orchestrator, Grok as worker — cheaper, faster fan-out for tasks where Claude's reasoning isn't needed but recency or specific tone is.
+- **Multi-model orchestration.** Claude as orchestrator, Grok as worker: cheaper, faster fan-out for tasks where Claude's reasoning isn't needed but recency or specific tone is.
 - **Live research inside Claude Code.** When debugging a library, pulling current GitHub issues or recent docs without leaving your terminal.
 - **Cross-model evaluation.** Pipe the same prompt to both models from inside Claude. Compare outputs in one workflow.
 - **Replace web-scraping infra.** If you have brittle Puppeteer/Playwright setups pulling X data, this replaces them with a single MCP call. xAI handles the auth, rate limits, and rendering.
@@ -80,53 +80,53 @@ This is a general-purpose Grok wrapper that any MCP client can hit. The use case
 
 - **Pull X conversation data on any topic for analysis.** Sentiment, volume, who's posting, engagement distribution.
 - **Track regulatory, policy, or industry developments** as they happen, not as they hit Claude's training data months later.
-- **Academic research on social discourse** — pull real-time data on how a topic is being discussed without writing a Twitter API client.
-- **Competitive intelligence pipelines** — track competitor releases, hiring posts, customer complaints, pricing changes.
+- **Academic research on social discourse**: pull real-time data on how a topic is being discussed without writing a Twitter API client.
+- **Competitive intelligence pipelines**: track competitor releases, hiring posts, customer complaints, pricing changes.
 - **Structured data extraction at scale.** `grok_structured_output` reliably extracts entities, relationships, or features from unstructured text.
 
 ### For automation and ops
 
 - **Wake up to a daily brief on topics you care about** (Claude Routines + this MCP = autonomous personal news desk).
 - **Brand mention monitoring** without paying for Brandwatch / Mention.com.
-- **Trend detection** — surface things going viral in your niche before they peak.
-- **Lead-gen triage** — find people publicly complaining about problems your product solves.
-- **Customer support reconnaissance** — see what users are saying about your product before a support ticket exists.
+- **Trend detection**: surface things going viral in your niche before they peak.
+- **Lead-gen triage**: find people publicly complaining about problems your product solves.
+- **Customer support reconnaissance**: see what users are saying about your product before a support ticket exists.
 - **Auto-generate visual alerts.** Trigger a `grok_image_generate` call to make a custom thumbnail when something noteworthy happens.
 
 ### For creators
 
-- **Trending content radar** — daily, autonomous research on what's going viral in your niche.
-- **Quote-tweet opportunity finder** — surface high-engagement posts in your topics worth responding to.
-- **Audience research** — see what your target audience actually talks about, not what you assume they care about.
-- **Source pulls for any output** — articles, threads, presentations — without context-switching to a browser.
+- **Trending content radar**: daily, autonomous research on what's going viral in your niche.
+- **Quote-tweet opportunity finder**: surface high-engagement posts in your topics worth responding to.
+- **Audience research**: see what your target audience actually talks about, not what you assume they care about.
+- **Source pulls for any output** (articles, threads, presentations) without context-switching to a browser.
 - **Visual brand workflows.** Generate banner art, social cards, post thumbnails, and video clips in one workflow without leaving Claude.
-- **Design feedback in chat.** Drop a screenshot via `grok_image_understand` and ask "what's wrong with this design?" — get specific notes.
+- **Design feedback in chat.** Drop a screenshot via `grok_image_understand` and ask "what's wrong with this design?": get specific notes.
 - **Multi-step content production:** `grok_web_search` → research, `grok_chat` → draft, `grok_image_generate` → visual, `grok_video_generate` → clip. One pipeline, one chat.
 
 ### For everyone
 
-- **Get current info into Claude.** Anything that happened after Claude's knowledge cutoff is reachable through this — without leaving your Claude chat.
+- **Get current info into Claude.** Anything that happened after Claude's knowledge cutoff is reachable through this, without leaving your Claude chat.
 - **Fact-check Claude's outputs** against live web data.
 - **Cross-reference claims** with both web sources and live X discussion.
-- **Generate visuals you can actually use** — Grok Imagine Quality Mode produces production-ready images.
+- **Generate visuals you can actually use**: Grok Imagine Quality Mode produces production-ready images.
 
 ---
 
 ## What you'll need
 
-- An **xAI API key** — get one at https://console.x.ai/
+- An **xAI API key**: get one at https://console.x.ai/
 - A **Cloudflare account** (free, takes 30 seconds to set up if you don't have one)
-- **A terminal you're comfortable pasting commands into** (macOS Terminal, iTerm, Windows Terminal — anything works)
-- **Node 18+** installed — [download here](https://nodejs.org/) if you don't have it
+- **A terminal you're comfortable pasting commands into** (macOS Terminal, iTerm, Windows Terminal: anything works)
+- **Node 18+** installed: [download here](https://nodejs.org/) if you don't have it
 - ~5 minutes
 
 ### A note on cost
 
 This repo doesn't bill you for anything. You're deploying your own copy of the server, paying xAI directly for Grok usage, and paying Cloudflare nothing for typical use.
 
-- **xAI**: you pay xAI for Grok API calls, billed to whatever payment method is on your xAI account ([console.x.ai](https://console.x.ai/)). Image and video generation are more expensive than text — check pricing before automating high-volume creative workflows.
+- **xAI**: you pay xAI for Grok API calls, billed to whatever payment method is on your xAI account ([console.x.ai](https://console.x.ai/)). Image and video generation are more expensive than text: check pricing before automating high-volume creative workflows.
 - **Cloudflare**: Workers free tier = 100k requests/day, more than you'll hit
-- **Me**: zero — no telemetry, no proxying, no relay. The code runs on your account, your key, your bill.
+- **Me**: zero (no telemetry, no proxying, no relay). The code runs on your account, your key, your bill.
 
 ---
 
@@ -139,7 +139,7 @@ npm install
 npx wrangler login
 ```
 
-(`wrangler login` opens a browser tab — authorize Cloudflare access once.)
+(`wrangler login` opens a browser tab: authorize Cloudflare access once.)
 
 Set your xAI key and generate your own auth secret as Worker secrets, then deploy:
 
@@ -246,8 +246,8 @@ Restart your Claude client and the tools become available.
 Search X (Twitter) via xAI's native X search tool.
 
 **Inputs:**
-- `query` (string, required) — what to search for
-- `context` (string, optional) — narrows the focus
+- `query` (string, required): what to search for
+- `context` (string, optional): narrows the focus
 
 **Example call (from inside Claude):**
 > use x_search to find recent posts about "Claude Code" with min_faves:500 filter:blue_verified
@@ -259,26 +259,26 @@ Search X (Twitter) via xAI's native X search tool.
 General web search via Grok.
 
 **Inputs:**
-- `query` (string, required) — what to search for
-- `context` (string, optional) — narrows the focus
+- `query` (string, required): what to search for
+- `context` (string, optional): narrows the focus
 
 ### `grok_chat`
 
 Plain text Grok completion.
 
 **Inputs:**
-- `prompt` (string, required) — user prompt
-- `system` (string, optional) — system prompt
-- `model` (string, optional) — model override (default: `grok-4.6`)
+- `prompt` (string, required): user prompt
+- `system` (string, optional): system prompt
+- `model` (string, optional): model override (default: `grok-4.6`)
 
 ### `grok_image_generate`
 
 Generate images from a text prompt.
 
 **Inputs:**
-- `prompt` (string, required) — description of the image
-- `n` (integer 1-4, optional) — number of variations (default: 1)
-- `model` (string, optional) — model override (default: `grok-imagine-image-2.0`)
+- `prompt` (string, required): description of the image
+- `n` (integer 1-4, optional): number of variations (default: 1)
+- `model` (string, optional): model override (default: `grok-imagine-image-2.0`)
 
 **Returns:** image URL(s). For multiple, returns a numbered list.
 
@@ -290,35 +290,35 @@ Generate images from a text prompt.
 Analyze an image using Grok's vision capabilities.
 
 **Inputs:**
-- `image_url` (string, required) — URL of the image (jpg, jpeg, or png)
-- `prompt` (string, required) — what you want to know about it
-- `model` (string, optional) — model override (default: `grok-4.6`)
+- `image_url` (string, required): URL of the image (jpg, jpeg, or png)
+- `prompt` (string, required): what you want to know about it
+- `model` (string, optional): model override (default: `grok-4.6`)
 
 **Example call:**
-> use grok_image_understand on https://example.com/dashboard.png — what UX issues do you see?
+> use grok_image_understand on https://example.com/dashboard.png: what UX issues do you see?
 
 ### `grok_image_edit`
 
 Edit an existing image via a text prompt.
 
 **Inputs:**
-- `image_url` (string, required) — URL of the source image
-- `prompt` (string, required) — description of the edit
-- `model` (string, optional) — model override (default: `grok-imagine-image-2.0`)
+- `image_url` (string, required): URL of the source image
+- `prompt` (string, required): description of the edit
+- `model` (string, optional): model override (default: `grok-imagine-image-2.0`)
 
 **Returns:** edited image URL.
 
 **Example call:**
-> use grok_image_edit on https://example.com/banner.jpg — change the background to a sunset and add a small moon in the upper right
+> use grok_image_edit on https://example.com/banner.jpg: change the background to a sunset and add a small moon in the upper right
 
 ### `grok_video_generate`
 
 Generate a short video (up to 10 seconds, 720p) from text or an image.
 
 **Inputs:**
-- `prompt` (string, required) — description of the video
-- `image_url` (string, optional) — starting image for image-to-video
-- `model` (string, optional) — model override (default: `grok-imagine-video`)
+- `prompt` (string, required): description of the video
+- `image_url` (string, optional): starting image for image-to-video
+- `model` (string, optional): model override (default: `grok-imagine-video`)
 
 **Returns:** video URL. Note: generation typically takes 20-60 seconds.
 
@@ -330,10 +330,10 @@ Generate a short video (up to 10 seconds, 720p) from text or an image.
 Get a JSON-schema-enforced response from Grok.
 
 **Inputs:**
-- `prompt` (string, required) — what you want Grok to produce
-- `schema` (object or stringified JSON, required) — JSON Schema describing the expected response shape
-- `system` (string, optional) — system prompt
-- `model` (string, optional) — model override (default: `grok-4.6`)
+- `prompt` (string, required): what you want Grok to produce
+- `schema` (object or stringified JSON, required): JSON Schema describing the expected response shape
+- `system` (string, optional): system prompt
+- `model` (string, optional): model override (default: `grok-4.6`)
 
 **Returns:** JSON matching the provided schema.
 
@@ -345,10 +345,10 @@ Get a JSON-schema-enforced response from Grok.
 Use Grok's reasoning mode for deep analysis.
 
 **Inputs:**
-- `prompt` (string, required) — the question or problem
-- `effort` (`"low"` | `"medium"` | `"high"`, optional) — reasoning depth (default: medium)
-- `system` (string, optional) — system prompt
-- `model` (string, optional) — model override (default: `grok-4.6`)
+- `prompt` (string, required): the question or problem
+- `effort` (`"low"` | `"medium"` | `"high"`, optional): reasoning depth (default: medium)
+- `system` (string, optional): system prompt
+- `model` (string, optional): model override (default: `grok-4.6`)
 
 **Example call:**
 > use grok_reasoning with effort=high to analyze whether building a personal MCP server is worth the maintenance cost vs using existing connectors
@@ -381,15 +381,15 @@ MCP client (Claude / Cursor / anything)
         │  Streamable HTTP MCP, Bearer auth (static secret or OAuth token)
         ▼
 Cloudflare Worker (this repo)
-        │  gateMcp() — fails closed without AUTH_SECRET
+        │  gateMcp(): fails closed without AUTH_SECRET
         │
         │  Bearer auth via Worker secret
         ▼
 xAI Grok API (api.x.ai/v1)
-  ├── /responses       — chat, search, vision, structured, reasoning
-  ├── /images/generations — image gen
-  ├── /images/edits    — image edit
-  └── /videos/generations — video gen
+  ├── /responses       - chat, search, vision, structured, reasoning
+  ├── /images/generations - image gen
+  ├── /images/edits    - image edit
+  └── /videos/generations - video gen
 ```
 
 - **Transport:** MCP over Streamable HTTP at `/mcp`
@@ -400,7 +400,7 @@ xAI Grok API (api.x.ai/v1)
 - **Auth (client → server):** gated by `AUTH_SECRET` (`src/auth.ts`), fail-closed.
   Two routes: a static bearer for headless clients (Claude Code), and OAuth
   2.0 + PKCE with stateless HMAC-signed tokens for the claude.ai connector.
-  No KV, no database — see [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
+  No KV, no database: see [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
   for the full request-routing and token-verification walkthrough.
 
 See [`docs/RUNBOOK.md`](./docs/RUNBOOK.md) for rotating secrets, redeploying,
@@ -446,36 +446,36 @@ Each Cloudflare account has its own namespace, so `grok-mcp-server.<you>.workers
 
 ## Why does this exist?
 
-Most MCP servers run locally on your machine. They work great — until you want to use Claude somewhere that isn't your laptop.
+Most MCP servers run locally on your machine. They work great (until you want to use Claude somewhere that isn't your laptop).
 
 The moment you do:
 
-- **Claude Routines** can't reach a local server — they run in Anthropic's cloud, not on your machine
+- **Claude Routines** can't reach a local server: they run in Anthropic's cloud, not on your machine
 - **Claude on your phone** can't talk to your desktop
 - **Any agent or automation** running anywhere but your laptop is locked out
 - **Sharing your setup** means asking someone to install Node, clone the repo, and keep their laptop awake
 
-A hosted MCP fixes all of that. The server lives on the open internet — on your Cloudflare account, behind your secret. Claude can reach it from anywhere. Same tools, same key, same behavior, from any device or workflow.
+A hosted MCP fixes all of that. The server lives on the open internet, on your Cloudflare account, behind your secret. Claude can reach it from anywhere. Same tools, same key, same behavior, from any device or workflow.
 
 **If you're a developer:** this is the production pattern. Local for prototyping, hosted for shipping. The same code runs in dev and prod.
 
 **If you're a creator or automation user:** this is what lets the magic follow you off your laptop. Your routines run while you sleep. Your phone has the same powers as your desktop. Your context is portable.
 
-The longer version — the architecture, the trade-offs, the templates for building this kind of context system around Claude — lives in [CLAUDE.md is the Starting Point](https://github.com/aunysillyme-dev/claude-os/blob/main/articles/claude_md_is_the_starting_point.md). Worth a read if you're thinking about building a system around Claude, not just chatting with it.
+The longer version (the architecture, the trade-offs, the templates for building this kind of context system around Claude) lives in [CLAUDE.md is the Starting Point](https://github.com/aunysillyme-dev/claude-os/blob/main/articles/claude_md_is_the_starting_point.md). Worth a read if you're thinking about building a system around Claude, not just chatting with it.
 
 ---
 
 ## Changelog
 
-**v1.2.0** — Added fail-closed dual-route inbound auth (`src/auth.ts`): a
+**v1.2.0**: Added fail-closed dual-route inbound auth (`src/auth.ts`): a
 static-bearer path for headless clients and self-contained OAuth 2.0 + PKCE
 for the claude.ai connector, both backed by one `AUTH_SECRET`. No KV, no
-database — stateless HMAC-signed tokens. Added `verify.sh`, `mcp.json`,
+database: stateless HMAC-signed tokens. Added `verify.sh`, `mcp.json`,
 `AGENTS.md`, `.env.example`, and `docs/`.
 
-**v1.1.0** — Added 6 new tools: `grok_image_generate`, `grok_image_understand`, `grok_image_edit`, `grok_video_generate`, `grok_structured_output`, `grok_reasoning`. Refactored to a shared `xaiFetch` helper. Server now exposes Grok's full surface area.
+**v1.1.0**: Added 6 new tools: `grok_image_generate`, `grok_image_understand`, `grok_image_edit`, `grok_video_generate`, `grok_structured_output`, `grok_reasoning`. Refactored to a shared `xaiFetch` helper. Server now exposes Grok's full surface area.
 
-**v1.0.0** — Initial release. Three tools: `x_search`, `grok_web_search`, `grok_chat`. Stateless MCP server on Cloudflare Workers.
+**v1.0.0**: Initial release. Three tools: `x_search`, `grok_web_search`, `grok_chat`. Stateless MCP server on Cloudflare Workers.
 
 ---
 
@@ -487,9 +487,9 @@ MIT. Fork it, ship it, change it, sell it.
 
 ## Related
 
-- [aunysillyme-dev/claude-os](https://github.com/aunysillyme-dev/claude-os) — the multi-AI operating system this is part of
-- [Cloudflare Agents SDK docs](https://developers.cloudflare.com/agents/) — the SDK underneath this
-- [Model Context Protocol](https://modelcontextprotocol.io) — the standard this implements
-- [xAI API docs](https://docs.x.ai/) — the underlying API this wraps
+- [aunysillyme-dev/claude-os](https://github.com/aunysillyme-dev/claude-os): the multi-AI operating system this is part of
+- [Cloudflare Agents SDK docs](https://developers.cloudflare.com/agents/): the SDK underneath this
+- [Model Context Protocol](https://modelcontextprotocol.io): the standard this implements
+- [xAI API docs](https://docs.x.ai/): the underlying API this wraps
 
 If you build something interesting on top of this, open an issue or [tag me on X](https://x.com/AunySillyMe). 🧡

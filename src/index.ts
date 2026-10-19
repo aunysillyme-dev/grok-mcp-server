@@ -17,8 +17,8 @@ import { handleOAuthRoutes, gateMcp } from "./auth";
  * scoped to that request's env. Deployed as a Cloudflare Worker.
  *
  * Endpoints:
- *   /     — health/info (JSON)
- *   /mcp  — MCP Streamable HTTP
+ *   /     - health/info (JSON)
+ *   /mcp  - MCP Streamable HTTP
  */
 
 export interface Env {
@@ -349,7 +349,7 @@ export default {
     const url = new URL(request.url);
 
     // OAuth 2.0 / PKCE routes (discovery, register, authorize, confirm, token).
-    // All unauthenticated by design — they issue the credential, they don't
+    // All unauthenticated by design: they issue the credential, they don't
     // consume one. Checked before anything else.
     const oauthResponse = await handleOAuthRoutes(request, url, env);
     if (oauthResponse) return oauthResponse;
@@ -382,7 +382,7 @@ export default {
       );
     }
 
-    // MCP endpoint — stateless: new server per request
+    // MCP endpoint - stateless: new server per request
     if (url.pathname === "/mcp" || url.pathname.startsWith("/mcp/")) {
       const denied = await gateMcp(request, env);
       if (denied) return denied;

@@ -6,7 +6,7 @@
 #   AUTH_SECRET=... ./verify.sh
 #   MCP_URL=https://your-worker.your-subdomain.workers.dev AUTH_SECRET=... ./verify.sh
 #
-# The secret is read from the environment on purpose. Never hardcode it — this
+# The secret is read from the environment on purpose. Never hardcode it: this
 # file is committed.
 
 set -uo pipefail
@@ -46,7 +46,7 @@ else p "A: static bearer" "FAIL (got $n, expected $EXPECTED_TOOLS)"; fail=1; fi
 # ── Auth gate: no request should ever reach tools/list unauthenticated ────────
 c=$(http -X POST "$URL/mcp" -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}')
 if [ "$c" = "401" ]; then p "no credential" "ok (401)"
-else p "no credential" "FAIL ($c — ENDPOINT IS OPEN)"; fail=1; fi
+else p "no credential" "FAIL ($c: ENDPOINT IS OPEN)"; fail=1; fi
 
 c=$(http -X POST "$URL/mcp" -H 'authorization: Bearer wrong' -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}')
 if [ "$c" = "401" ]; then p "bad credential" "ok (401)"
@@ -78,7 +78,7 @@ n=$(count_tools "$TOK")
 if [ "${n:-0}" -eq "$EXPECTED_TOOLS" ]; then p "B: oauth token → tools/list" "ok ($n tools)"
 else p "B: oauth token" "FAIL (got $n)"; fail=1; fi
 
-# PKCE must reject a mismatched verifier — else the flow is theater.
+# PKCE must reject a mismatched verifier, else the flow is theater.
 err=$(curl -s -m 15 -X POST "$URL/oauth/token" -H 'content-type: application/x-www-form-urlencoded' \
   --data-urlencode "code=$CODE" \
   --data-urlencode "redirect_uri=https://claude.ai/api/mcp/auth_callback" \

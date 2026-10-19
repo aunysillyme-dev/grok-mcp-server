@@ -64,7 +64,7 @@ test("confirm re-checks the redirect_uri, since it is directly callable", async 
   assert.equal((await handleOAuthConfirm(req, env)).status, 400);
 });
 
-// ── 3. No owner authentication on the consent page (AUN-454) ──
+// ── 3. No owner authentication on the consent page ──
 test("connector flow is disabled without CONNECT_SECRET", () => {
   const url = new URL(`https://w.example/oauth/authorize?redirect_uri=${encodeURIComponent(OK_REDIRECT)}&code_challenge=abc`);
   assert.equal(handleOAuthAuthorize(url, { AUTH_SECRET: SECRET } as any).status, 503);

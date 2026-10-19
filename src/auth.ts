@@ -1,5 +1,5 @@
 // Inbound auth for the /mcp endpoint: self-contained OAuth 2.0 + PKCE, plus a
-// static-secret bearer path. No external OAuth library, no KV — access tokens
+// static-secret bearer path. No external OAuth library, no KV: access tokens
 // are stateless, HMAC-signed, and expire.
 //
 // NOTE: this is DISTINCT from the outbound Bearer sent to xAI in index.ts
@@ -7,10 +7,10 @@
 // may call this server.
 //
 // Two credential paths converge on the same /mcp handler:
-//   A. Static AUTH_SECRET as a Bearer token — for headless automation and
+//   A. Static AUTH_SECRET as a Bearer token: for headless automation and
 //      Claude Code (configs that can set an Authorization header). No
 //      interactive step, so scheduled/routine sessions are never blocked.
-//   B. Full OAuth 2.0 / PKCE — for the claude.ai connector, which authenticates
+//   B. Full OAuth 2.0 / PKCE: for the claude.ai connector, which authenticates
 //      by handshake (one Connect click plus the CONNECT_SECRET you chose) and
 //      receives a signed, expiring token, never the raw secret and never a key
 //      in a URL.
@@ -209,9 +209,9 @@ async function verifyCode(secret: string, code: string): Promise<CodeClaims | nu
 /** Single-use enforcement via the CodeLedger Durable Object.
  *
  *  Returns null when the code may be spent, or a Response to return instead:
- *    503 — binding missing, or the RPC threw. Fail closed: a ledger we cannot
+ *    503: binding missing, or the RPC threw. Fail closed: a ledger we cannot
  *          reach is a ledger we cannot trust.
- *    400 — the ledger returned anything other than strictly `true`
+ *    400: the ledger returned anything other than strictly `true`
  *          (already redeemed, or a misbehaving consume). */
 async function claimCode(env: Env, codeId: string, expiresAt: number): Promise<Response | null> {
   const json = (status: number, error: string, desc: string) =>

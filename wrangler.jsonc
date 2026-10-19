@@ -37,7 +37,7 @@
 
   // ── Secrets (set with `wrangler secret put <NAME>`, never committed) ──
   //
-  // XAI_API_KEY   required. Your xAI API key (console.x.ai). Outbound only —
+  // XAI_API_KEY   required. Your xAI API key (console.x.ai). Outbound only:
   //                used to call api.x.ai on the server's behalf.
   //
   // AUTH_SECRET    required. Gates the inbound /mcp endpoint (src/auth.ts).
