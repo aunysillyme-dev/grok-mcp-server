@@ -1,5 +1,7 @@
 # grok-mcp-server
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/aunysillyme-dev/grok-mcp-server/badge)](https://scorecard.dev/viewer/?uri=github.com/aunysillyme-dev/grok-mcp-server)
+
 A remote MCP server that gives any Claude (or any MCP-compatible AI) access to xAI Grok's full surface area (live X (Twitter) search, web search, chat, image generation, vision, image editing, video generation, structured outputs, and reasoning) from anywhere. Your laptop, your phone, an automated routine running while you sleep.
 
 Whether you're a developer building agents, an automation tinkerer wiring up workflows, or a creator who wants real-time data inside Claude, this is the same install.
